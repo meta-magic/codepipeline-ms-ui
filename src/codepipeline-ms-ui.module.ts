@@ -2,10 +2,11 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AmexioWidgetModule } from 'amexio-ng-extensions';
-import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 import { TaskUIComponent } from './app/project/taskui/taskui.component';
 import {InstanceUIComponent} from "./app/project/instance-manager/instance.manager.component";
+import {HttpClientModule} from "@angular/common/http";
+import {PlatformCommmonsModule} from "platform-commons";
 
 const routes: Routes = [
   {
@@ -23,7 +24,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     AmexioWidgetModule,
-    HttpModule,
+    HttpClientModule,
+    PlatformCommmonsModule,
     RouterModule.forChild(routes)
   ],
   declarations: [TaskUIComponent,InstanceUIComponent],
