@@ -9,24 +9,25 @@ import { HttpClient } from '@angular/common/http';
   selector: 'task-ui',
   styles: [
     `
-  .taskStatusBlue {
-    background-color: lightblue;
-    color: black;
-    font-size:16px }
-  .taskStatusYellow {
-    background-color: lightyellow;
-    color: black;
-    font-size:16px }
-  .taskStatusGreen  {
-    background-color: lightgreen;
-    color: black;
-    font-size:16px}
-  .taskStatusRed {
-    background-color: lightcoral;
-    color: black;
-    font-size:16px }
+    .green {
+      color: green!important;
+     
+  }
+  .red {
+      color: red!important;
+     
+  }
+  .yellow {
+      color: yellow!important;
+      
+  }
+  .blue {
+    color: blue!important;    
+  }
+  
        `
   ],
+
   template: `
   <amexio-row>
   <amexio-column [size] =12 >
@@ -58,8 +59,10 @@ import { HttpClient } from '@angular/common/http';
       [data-type]="'string'" [hidden]="false"
       [text]="'Status'">
       <ng-template #amexioBodyTmpl let-row="row">
-    <a [ngClass]="{'taskStatusBlue': row.statusCode == 0  ,'taskStatusYellow': row.statusCode == 1, 'taskStatusGreen' : row.statusCode == 2,'taskStatusRed'  : row.statusCode == 3 }">{{row.status}}</a>  
-    </ng-template> 
+      <a class="fa fa-circle fa-lg"
+     [ngClass]="{'blue': row.statusCode==0 , 'yellow': row.statusCode ==1 , 'green': row.statusCode ==2 , 'red' : row.statusCode ==3}"></a>
+       &nbsp;{{row.status}} 
+   </ng-template>
     </amexio-data-table-column>
     <amexio-data-table-column [data-index]="'statusCode'"
       [data-type]="'string'" [hidden]="true"
