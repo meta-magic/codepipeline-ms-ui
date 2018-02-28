@@ -98,6 +98,17 @@ import { CookieService } from 'platform-commons';
     <amexio-notification [data]="messageArray" [vertical-position]="'top'" [horizontal-position]="'right'" [auto-dismiss-msg]="true" [auto-dismiss-msg-interval]="4000">
         </amexio-notification>
     </amexio-row>
+    <amexio-dialogue [show-dialogue]="isValidateForm" [message-type]="'error'" [closable]="false" [title]="'Error'" [type]="'alert'" [custom]="true">
+<amexio-body>
+    <ol>
+        <li *ngFor="let msgObj of validationMsgArray let index=index">{{msgObj}}</li>
+    </ol>
+</amexio-body>
+<amexio-action>
+    <amexio-button type="primary" (onClick)="okErrorBtnClick()" [label]="'Ok'">
+    </amexio-button>
+</amexio-action>
+</amexio-dialogue>   
 
 
   `
@@ -105,6 +116,8 @@ import { CookieService } from 'platform-commons';
 export class InstanceUIComponent implements OnInit {
   intsanceData: any;
   messageArray: any[];
+  validationMsgArray: any = [];
+  isValidateForm: boolean = false;
   timeintrval: any;
   constructor(private http: HttpClient, private cookieService: CookieService) {
     this.getInstanceData();
@@ -125,7 +138,10 @@ export class InstanceUIComponent implements OnInit {
       this.getInstanceData();
     }, 60000);
   }
-
+  okErrorBtnClick() {
+    this.isValidateForm = false;
+    this.validationMsgArray = [];
+  }
   onStop(row: any) {
     if (row.instanceState === 'stopping' || row.instanceState === 'stopped') {
       this.messageArray.push('Instance is already stopping/stopped');
@@ -142,14 +158,16 @@ export class InstanceUIComponent implements OnInit {
             response = res;
           },
           err => {
-            this.messageArray.push('Unable to connect to server');
+            this.validationMsgArray.push('Unable to connect to server');
+            this.isValidateForm = true;
           },
           () => {
             if (response.success) {
               this.getInstanceData();
               this.messageArray.push(response.successMessage);
             } else {
-              this.messageArray.push(response.errorMessage);
+              this.validationMsgArray.push(response.errorMessage);
+              this.isValidateForm = true;
             }
           }
         );
@@ -172,14 +190,16 @@ export class InstanceUIComponent implements OnInit {
             response = res;
           },
           err => {
-            this.messageArray.push('Unable to connect to server');
+            this.validationMsgArray.push('Unable to connect to server');
+            this.isValidateForm = true;
           },
           () => {
             if (response.success) {
               this.messageArray.push(response.successMessage);
               this.getInstanceData();
             } else {
-              this.messageArray.push(response.errorMessage);
+              this.validationMsgArray.push(response.errorMessage);
+              this.isValidateForm = true;
             }
           }
         );
@@ -194,13 +214,15 @@ export class InstanceUIComponent implements OnInit {
         instancResponse = response;
       },
       error => {
-        this.messageArray.push('Unable to connect to server');
+        this.validationMsgArray.push('Unable to connect to server');
+        this.isValidateForm = true;
       },
       () => {
         if (instancResponse.success) {
           this.intsanceData = instancResponse.response;
         } else {
-          this.messageArray.push(instancResponse.errorMessage);
+          this.validationMsgArray.push(instancResponse.errorMessage);
+          this.isValidateForm = true;
         }
       }
     );
