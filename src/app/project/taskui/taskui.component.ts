@@ -1,5 +1,5 @@
 /**
- * Created by pratik on 15/2/18.
+ * Created by rashmi on 15/2/18.
  */
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'platform-commons';
@@ -79,6 +79,17 @@ import { HttpClient } from '@angular/common/http';
    </amexio-datagrid>
    </amexio-column>
  </amexio-row>
+ <amexio-dialogue [show-dialogue]="isValidateForm" [message-type]="'error'" [closable]="false" [title]="'Error'" [type]="'alert'" [custom]="true">
+<amexio-body>
+    <ol>
+        <li *ngFor="let msgObj of validationMsgArray let index=index">{{msgObj}}</li>
+    </ol>
+</amexio-body>
+<amexio-action>
+    <amexio-button type="primary" (onClick)="okErrorBtnClick()" [label]="'Ok'">
+    </amexio-button>
+</amexio-action>
+</amexio-dialogue>
  `
 })
 export class TaskUIComponent implements OnInit {
