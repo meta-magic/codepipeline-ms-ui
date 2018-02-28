@@ -1,7 +1,7 @@
 /**
  * Created by Ashwini on 20/2/18.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CookieService } from 'platform-commons';
 @Component({
@@ -105,13 +105,26 @@ import { CookieService } from 'platform-commons';
 export class InstanceUIComponent implements OnInit {
   intsanceData: any;
   messageArray: any[];
+  timeintrval: any;
   constructor(private http: HttpClient, private cookieService: CookieService) {
     this.getInstanceData();
     this.intsanceData = [];
     this.messageArray = [];
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.instanceMethodCall();
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.timeintrval);
+  }
+
+  instanceMethodCall() {
+    this.timeintrval = setInterval(() => {
+      this.getInstanceData();
+    }, 60000);
+  }
 
   onStop(row: any) {
     if (row.instanceState === 'stopping' || row.instanceState === 'stopped') {
