@@ -34,10 +34,10 @@ import { HttpClient } from '@angular/common/http';
    <amexio-datagrid
    [enable-column-fiter]="true"
    title="Task Status"
+   [data]="taskData"
    [http-method]="'get'"
    [http-url]="'/api/pipeline/task/findAll'"
    [data-reader]="'response'"
-  
    [page-size] = "10">
     <amexio-data-table-column [data-index]="'type'"
       [data-type]="'string'" [hidden]="false"
@@ -79,12 +79,59 @@ import { HttpClient } from '@angular/common/http';
    </amexio-datagrid>
    </amexio-column>
  </amexio-row>
-
-
  `
 })
 export class TaskUIComponent implements OnInit {
-  constructor(private cookieService: CookieService, private http: HttpClient) {}
+  timeinterval: any;
+  taskData: any;
+  isValidateForm: boolean = false;
+  validationMsgArray: any = [];
 
-  ngOnInit() {}
+  constructor(private cookieService: CookieService, private http: HttpClient) {
+    this.taskData = [];
+  }
+
+  //Initialized Method
+  ngOnInit() {
+    this.taskMethodCall();
+  }
+
+  //Method to Clear interval
+  ngOnDestroy() {
+    clearInterval(this.timeinterval);
+  }
+
+  //Method to AUto Reload
+  taskMethodCall() {
+    this.timeinterval = setInterval(() => {
+      this.getTaskDetails();
+    }, 60000);
+  }
+
+  // To Close Window
+  okErrorBtnClick() {
+    this.isValidateForm = false;
+  }
+
+  //Method To Get All Tasks Details
+  getTaskDetails() {
+    let taskResponse: any;
+    this.http.get('/api/pipeline/task/findAll').subscribe(
+      response => {
+        taskResponse = response;
+      },
+      error => {
+        this.validationMsgArray.push('Unable to connect to server');
+        this.isValidateForm = true;
+      },
+      () => {
+        if (taskResponse.success) {
+          this.taskData = taskResponse.response;
+        } else {
+          this.validationMsgArray.push(taskResponse.errorMessage);
+          this.isValidateForm = true;
+        }
+      }
+    );
+  }
 }
