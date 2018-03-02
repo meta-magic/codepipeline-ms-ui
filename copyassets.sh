@@ -2,5 +2,5 @@
 cp -a src/assets/ dist/
 echo "Copied assets folder to dist"
 echo "Copy dist/ to Apache Server"
-cd dist && npm pack && cp -a codepipelinemsui-0.0.0.tgz /var/www/html/desireplatform/
+cd dist && npm pack &&  mv codepipelinemsui-0.0.0.tgz codepipelinemsui.tgz && cp -a codepipelinemsui.tgz /var/www/html/desireplatform/micro-ui-libs/
 
