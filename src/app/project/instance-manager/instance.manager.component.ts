@@ -119,7 +119,7 @@ export class InstanceUIComponent implements OnInit {
   validationMsgArray: any = [];
   isValidateForm: boolean = false;
   timeintrval: any;
-  constructor(private http: HttpClient, private cookieService: CookieService) {
+  constructor(private http: HttpClient) {
     this.getInstanceData();
     this.intsanceData = [];
     this.messageArray = [];
