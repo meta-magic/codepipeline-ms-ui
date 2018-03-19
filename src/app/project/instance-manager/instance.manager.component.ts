@@ -82,10 +82,16 @@ import { CookieService } from 'platform-commons';
                     [text]="'Action'">
                     <ng-template #amexioBodyTmpl let-column let-row="row">
                     <span>
-                    
-                    <amexio-button [type]="'success'" [size]="'small'" [tooltip]="'Start'" [icon]="'fa fa-play-circle'" (onClick)="onStart(row)"></amexio-button>
-                    <amexio-button [type]="'danger'" [size]="'small'" [tooltip]="'Stop'" [icon]="'fa fa-stop-circle'" (onClick)="onStop(row)"></amexio-button> 
-                    
+                    <ng-container *ngIf="row.instanceState=='stopped'">
+<amexio-image style="color:green;" [icon-class]="'fa fa-play-circle fa-2x'"
+              [tooltip]="'Start'" (onClick)="onStart(row)">
+</amexio-image>
+                    </ng-container> 
+                    <ng-container *ngIf="row.instanceState=='running'">
+                   <amexio-image style="color:red;" [icon-class]="'fa fa-stop-circle fa-2x'"
+              [tooltip]="'Stop'" (onClick)="onStop(row)">
+                 </amexio-image>
+                    </ng-container>
                     </span>
                     </ng-template>
                 </amexio-data-table-column>
@@ -205,6 +211,16 @@ export class InstanceUIComponent implements OnInit {
         );
     }
   }
+  /*  onStartStop(row:any){
+    if(row.instanceState === 'stopping' || row.instanceState === 'running'){
+      this.messageArray.push('Instance is already Stopping/pending ')
+      this.onStart(row.instanceId);
+    }else if(row.instanceState === 'running'){
+      this.onStop(row.instanceId);
+    }else if(row.instanceState === 'stopped'){
+      this.onStart(row.instanceId);
+    }
+  }  */
 
   getInstanceData() {
     let instancResponse: any;
