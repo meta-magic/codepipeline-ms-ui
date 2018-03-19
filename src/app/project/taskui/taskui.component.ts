@@ -60,7 +60,7 @@ import { HttpClient } from '@angular/common/http';
       [text]="'Status'">
       <ng-template #amexioBodyTmpl let-row="row">
       <a class="fa fa-circle fa-lg"
-     [ngClass]="{'blue': row.statusCode==0 , 'yellow': row.statusCode ==1 , 'green': row.statusCode ==2 , 'red' : row.statusCode ==3}"></a>
+     [ngClass]="{'yellow': row.statusCode==0 , 'blue': row.statusCode ==1 , 'green': row.statusCode ==2 , 'red' : row.statusCode ==3}"></a>
        &nbsp;{{row.status}} 
    </ng-template>
     </amexio-data-table-column>
