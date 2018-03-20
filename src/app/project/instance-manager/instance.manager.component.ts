@@ -26,19 +26,20 @@ import { CookieService } from 'platform-commons';
     <amexio-column [size]=12>
     <amexio-card [header]="true"
 [footer]="false"
-[show]="true">
+[show]="true"
+[body-height]="85">
     <amexio-header>
         Instance Management
     </amexio-header>
     <amexio-body>
     <amexio-row>
         <amexio-column [size] ="12" >
-            <amexio-datagrid  title="Instance"
+            <amexio-datagrid  title=""
                 [data]="intsanceData"
                 [page-size] = "10"
-                [height]="200"
+                [height]="300"
                 [enable-data-filter]="true">
-         <amexio-data-table-column [data-index]="'instanceId'" [width]="18"
+         <amexio-data-table-column [data-index]="'instanceId'" [width]="25"
          [data-type]="'string'" [hidden]="false" [text]="'ID'">
         </amexio-data-table-column>
         <amexio-data-table-column [data-index]="'instanceName'" [width]="25"
@@ -74,7 +75,7 @@ import { CookieService } from 'platform-commons';
          [data-type]="'string'" [hidden]="true" [text]="'VPC ID'">
         </amexio-data-table-column>
         <amexio-data-table-column [data-index]="'launchTime'" [width]="15"
-         [data-type]="'string'" [hidden]="false" [text]="'Launch Time'">
+         [data-type]="'string'" [hidden]="true" [text]="'Launch Time'">
         </amexio-data-table-column>
         <amexio-data-table-column [width]="15"
                     [data-index]="'instanceAction'"

@@ -29,11 +29,21 @@ import { HttpClient } from '@angular/common/http';
   ],
 
   template: `
+   <amexio-row>
+    <amexio-column [size]=12>
+    <amexio-card [header]="true"
+[footer]="false"
+[show]="true"
+[body-height]="85">
+    <amexio-header>
+     Task Status
+    </amexio-header>
+    <amexio-body>
   <amexio-row>
   <amexio-column [size] =12 >
    <amexio-datagrid
    [enable-column-fiter]="true"
-   title="Task Status"
+   title=""
    [data]="taskData"
    [http-method]="'get'"
    [http-url]="'/api/pipeline/task/findAll'"
@@ -78,6 +88,10 @@ import { HttpClient } from '@angular/common/http';
     </amexio-data-table-column>
    </amexio-datagrid>
    </amexio-column>
+ </amexio-row>
+ </amexio-body>
+ </amexio-card>
+ </amexio-column>
  </amexio-row>
  <amexio-dialogue [show-dialogue]="isValidateForm" [message-type]="'error'" [closable]="false" [title]="'Error'" [type]="'alert'" [custom]="true">
 <amexio-body>
