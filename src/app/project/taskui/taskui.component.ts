@@ -34,7 +34,7 @@ import { HttpClient } from '@angular/common/http';
     <amexio-card [header]="true"
 [footer]="false"
 [show]="true"
-[body-height]="85">
+[body-height]="82">
     <amexio-header>
      Task Status
     </amexio-header>

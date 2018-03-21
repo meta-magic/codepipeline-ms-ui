@@ -27,7 +27,7 @@ import { CookieService } from 'platform-commons';
     <amexio-card [header]="true"
 [footer]="false"
 [show]="true"
-[body-height]="85">
+[body-height]="82">
     <amexio-header>
         Instance Management
     </amexio-header>
