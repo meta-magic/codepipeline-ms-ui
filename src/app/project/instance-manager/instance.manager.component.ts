@@ -29,7 +29,10 @@ import { CookieService } from 'platform-commons';
 [show]="true"
 [body-height]="82">
     <amexio-header>
-        Instance Management
+        <amexio-image  style="padding-right:5px;"[icon-class]="'fa fa-refresh fa-lg'"
+              [tooltip]="'Reload'" (onClick)="getInstanceData()">
+              </amexio-image>
+              Instance Management
     </amexio-header>
     <amexio-body>
     <amexio-row>
