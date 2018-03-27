@@ -36,6 +36,9 @@ import { HttpClient } from '@angular/common/http';
 [show]="true"
 [body-height]="82">
     <amexio-header>
+      <amexio-image  style="padding-right:10px;"[icon-class]="'fa fa-refresh fa-lg'"
+              [tooltip]="'Reload'" (onClick)="getTaskDetails()">
+              </amexio-image>
      Task Status
     </amexio-header>
     <amexio-body>
