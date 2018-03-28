@@ -96,7 +96,7 @@ import { HttpClient } from '@angular/common/http';
  </amexio-card>
  </amexio-column>
  </amexio-row>
- <amexio-dialogue [show-dialogue]="isValidateForm" [message-type]="'error'" [closable]="false" [title]="'Error'" [type]="'alert'" [custom]="true">
+ <amexio-dialogue [show-dialogue]="isValidateForm" [message-type]="'error'" [closable]="true" [title]="'Error'" [type]="'alert'" [custom]="true" (close)="isValidateForm = !isValidateForm">
 <amexio-body>
     <ol>
         <li *ngFor="let msgObj of validationMsgArray let index=index">{{msgObj}}</li>
