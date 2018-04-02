@@ -129,6 +129,7 @@ export class InstanceUIComponent implements OnInit {
   validationMsgArray: any = [];
   isValidateForm: boolean = false;
   timeintrval: any;
+  serverFlag: boolean;
   constructor(private http: HttpClient) {
     this.getInstanceData();
     this.intsanceData = [];
@@ -144,8 +145,11 @@ export class InstanceUIComponent implements OnInit {
   }
 
   instanceMethodCall() {
+    console.log('server', this.serverFlag);
     this.timeintrval = setInterval(() => {
-      this.getInstanceData();
+      if (this.serverFlag) {
+        this.getInstanceData();
+      }
     }, 60000);
   }
   okErrorBtnClick() {
@@ -228,7 +232,7 @@ export class InstanceUIComponent implements OnInit {
 
   getInstanceData() {
     let instancResponse: any;
-
+    this.serverFlag = true;
     this.http.get('/api/pipeline/Instance/findAllInstances').subscribe(
       response => {
         instancResponse = response;
@@ -236,6 +240,7 @@ export class InstanceUIComponent implements OnInit {
       error => {
         this.validationMsgArray.push('Unable to connect to server');
         this.isValidateForm = true;
+        this.serverFlag = false;
       },
       () => {
         if (instancResponse.success) {
