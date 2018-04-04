@@ -19,6 +19,10 @@ import { CookieService } from 'platform-commons';
 .yellow {
     color: yellow!important;
     
+}
+  
+.instanceManagement .input-control{
+  padding:0px !important;
 }`
   ],
   template: `
@@ -28,16 +32,31 @@ import { CookieService } from 'platform-commons';
 [footer]="false"
 [show]="true"
 [body-height]="82">
-    <amexio-header>
-        <amexio-image  style="padding-right:10px;"[icon-class]="'fa fa-refresh fa-lg'"
+    <amexio-header class="instanceManagement">
+    <amexio-row>
+     <amexio-column  size="1">   
+     <amexio-image  style="padding-right:10px;"[icon-class]="'fa fa-refresh fa-lg'"
               [tooltip]="'Reload'" (onClick)="getInstanceData()">
-              </amexio-image>
-              Instance Management
+              </amexio-image>  
+            </amexio-column>   
+     <amexio-column size="5">
+     Refresh Time:
+         </amexio-column>
+    <amexio-column size="2">
+    <amexio-number-input  [(ngModel)]="refreshtime" (change)="onChange()"  [has-label]="false">
+   </amexio-number-input>
+  
+    </amexio-column>
+        <amexio-column size="4">
+    </amexio-column>
+
+    
+            </amexio-row>      
     </amexio-header>
     <amexio-body>
     <amexio-row>
         <amexio-column [size] ="12" >
-            <amexio-datagrid  title=""
+            <amexio-datagrid  title="Instance Management"
                 [data]="intsanceData"
                 [page-size] = "10"
                 [height]="300"
@@ -129,28 +148,38 @@ export class InstanceUIComponent implements OnInit {
   validationMsgArray: any = [];
   isValidateForm: boolean = false;
   timeintrval: any;
+  refreshInterval: any;
+  refreshtime: number;
   serverFlag: boolean;
   constructor(private http: HttpClient) {
+    //refreshtime is in min
+    this.refreshtime = 1;
     this.getInstanceData();
     this.intsanceData = [];
     this.messageArray = [];
   }
 
   ngOnInit() {
-    this.instanceMethodCall();
+    this.instanceMethodCall(this.refreshtime);
   }
 
   ngOnDestroy() {
     clearInterval(this.timeintrval);
   }
+  onChange() {
+    console.log('data', this.refreshInterval);
+    this.instanceMethodCall(this.refreshtime);
+  }
 
-  instanceMethodCall() {
-    console.log('server', this.serverFlag);
+  instanceMethodCall(data: any) {
+    this.refreshInterval = null;
+    this.refreshInterval = data * 60000;
     this.timeintrval = setInterval(() => {
+      console.log('interval', this.refreshInterval);
       if (this.serverFlag) {
         this.getInstanceData();
       }
-    }, 60000);
+    }, this.refreshInterval);
   }
   okErrorBtnClick() {
     this.isValidateForm = false;

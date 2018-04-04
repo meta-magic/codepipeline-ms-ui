@@ -35,22 +35,36 @@ import { HttpClient } from '@angular/common/http';
 [footer]="false"
 [show]="true"
 [body-height]="82">
-    <amexio-header>
-      <amexio-image  style="padding-right:10px;"[icon-class]="'fa fa-refresh fa-lg'"
+    <amexio-header class="instanceManagement">
+      <amexio-row>
+     <amexio-column  size="1">   
+     <amexio-image  style="padding-right:10px;"[icon-class]="'fa fa-refresh fa-lg'"
               [tooltip]="'Reload'" (onClick)="getTaskDetails()">
-              </amexio-image>
-     Task Status
+              </amexio-image>  
+            </amexio-column>   
+     <amexio-column size="5">
+     Refresh Time:
+         </amexio-column>
+    <amexio-column size="2">
+    <div class="instanceManagement">
+    <amexio-number-input  [(ngModel)]="refreshtime" (change)="onChange()"  [has-label]="false">
+   </amexio-number-input>
+   </div>
+    </amexio-column>
+        <amexio-column size="4">
+    </amexio-column>
+
+    
+            </amexio-row>      
+
     </amexio-header>
     <amexio-body>
   <amexio-row>
   <amexio-column [size] =12 >
    <amexio-datagrid
    [enable-column-fiter]="true"
-   title=""
+   title="Task Status"
    [data]="taskData"
-   [http-method]="'get'"
-   [http-url]="'/api/pipeline/task/findAll'"
-   [data-reader]="'response'"
    [page-size] = "10">
     <amexio-data-table-column [data-index]="'type'"
       [data-type]="'string'" [hidden]="false"
@@ -114,14 +128,18 @@ export class TaskUIComponent implements OnInit {
   taskData: any;
   isValidateForm: boolean = false;
   validationMsgArray: any = [];
-
+  refreshInterval: any;
+  refreshtime: number;
+  serverFlag: boolean;
   constructor(private cookieService: CookieService, private http: HttpClient) {
+    this.refreshtime = 1;
+    this.getTaskDetails();
     this.taskData = [];
   }
 
   //Initialized Method
   ngOnInit() {
-    this.taskMethodCall();
+    this.taskMethodCall(this.refreshtime);
   }
 
   //Method to Clear interval
@@ -129,11 +147,19 @@ export class TaskUIComponent implements OnInit {
     clearInterval(this.timeinterval);
   }
 
+  onChange() {
+    console.log('data', this.refreshInterval);
+    this.taskMethodCall(this.refreshtime);
+  }
+
   //Method to AUto Reload
-  taskMethodCall() {
+  taskMethodCall(data: any) {
+    this.refreshInterval = data * 60000;
     this.timeinterval = setInterval(() => {
-      this.getTaskDetails();
-    }, 60000);
+      if (this.serverFlag) {
+        this.getTaskDetails();
+      }
+    }, this.refreshInterval);
   }
 
   // To Close Window
@@ -151,6 +177,7 @@ export class TaskUIComponent implements OnInit {
       error => {
         this.validationMsgArray.push('Unable to connect to server');
         this.isValidateForm = true;
+        this.serverFlag = false;
       },
       () => {
         if (taskResponse.success) {
