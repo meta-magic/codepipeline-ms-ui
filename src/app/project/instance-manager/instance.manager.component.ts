@@ -170,7 +170,8 @@ export class InstanceUIComponent implements OnInit {
     clearInterval(this.timeintrval);
   }
   onChange() {
-    if (this.refreshtime >= 1) {
+    if (this.refreshtime >= 0.5) {
+      clearInterval(this.timeintrval);
       this.instanceMethodCall(this.refreshtime);
     } else {
       this.validationMsgArray.push('time can not be less than 1 min');
@@ -188,7 +189,6 @@ export class InstanceUIComponent implements OnInit {
         this.getInstanceData();
       }
     }, this.refreshInterval);
-    console.log();
   }
   okErrorBtnClick() {
     this.isValidateForm = false;

@@ -154,8 +154,8 @@ export class TaskUIComponent implements OnInit {
   }
 
   onChange() {
-    if (this.refreshtime >= 1) {
-      console.log('data', this.refreshInterval);
+    if (this.refreshtime >= 0.5) {
+      clearInterval(this.timeintrval);
       this.taskMethodCall(this.refreshtime);
     } else {
       this.validationMsgArray.push('time can not be less than 1 min');
