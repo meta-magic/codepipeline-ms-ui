@@ -42,19 +42,20 @@ import { HttpClient } from '@angular/common/http';
               [tooltip]="'Reload'" (onClick)="getTaskDetails()">
               </amexio-image>  
             </amexio-column>   
-     <amexio-column size="5">
-     Refresh Time:
-         </amexio-column>
+     <amexio-column size="4">
+              Refresh Time:
+  </amexio-column>
     <amexio-column size="2">
-    <div class="instanceManagement">
-    <amexio-number-input  [(ngModel)]="refreshtime" (change)="onChange()"  [has-label]="false">
+    <amexio-number-input  [(ngModel)]="refreshtime" (change)="onChange()"  [has-label]="false"
+    [min-value]="1"
+     [min-error-msg]="'time can not be less than 1 min'">
    </amexio-number-input>
-   </div>
+    </amexio-column>
+    <amexio-column size="1">
+    min
     </amexio-column>
         <amexio-column size="4">
     </amexio-column>
-
-    
             </amexio-row>      
 
     </amexio-header>
@@ -62,10 +63,11 @@ import { HttpClient } from '@angular/common/http';
   <amexio-row>
   <amexio-column [size] =12 >
    <amexio-datagrid
-   [enable-column-fiter]="true"
    title="Task Status"
    [data]="taskData"
-   [page-size] = "10">
+   [page-size] = "10"
+   [height]="300"
+   [enable-data-filter]="true">
     <amexio-data-table-column [data-index]="'type'"
       [data-type]="'string'" [hidden]="false"
       [text]="'Type'">
@@ -109,6 +111,8 @@ import { HttpClient } from '@angular/common/http';
  </amexio-body>
  </amexio-card>
  </amexio-column>
+ <amexio-notification [data]="messageArray" [vertical-position]="'top'" [horizontal-position]="'right'" [auto-dismiss-msg]="true" [auto-dismiss-msg-interval]="4000">
+        </amexio-notification>
  </amexio-row>
  <amexio-dialogue [show-dialogue]="isValidateForm" [message-type]="'error'" [closable]="true" [title]="'Error'" [type]="'alert'" [custom]="true" (close)="isValidateForm = !isValidateForm">
 <amexio-body>
@@ -124,17 +128,19 @@ import { HttpClient } from '@angular/common/http';
  `
 })
 export class TaskUIComponent implements OnInit {
-  timeinterval: any;
   taskData: any;
-  isValidateForm: boolean = false;
+  messageArray: any[];
   validationMsgArray: any = [];
+  isValidateForm: boolean = false;
+  timeintrval: any;
   refreshInterval: any;
   refreshtime: number;
   serverFlag: boolean;
-  constructor(private cookieService: CookieService, private http: HttpClient) {
+  constructor(private http: HttpClient) {
     this.refreshtime = 1;
     this.getTaskDetails();
     this.taskData = [];
+    this.messageArray = [];
   }
 
   //Initialized Method
@@ -144,32 +150,23 @@ export class TaskUIComponent implements OnInit {
 
   //Method to Clear interval
   ngOnDestroy() {
-    clearInterval(this.timeinterval);
+    clearInterval(this.timeintrval);
   }
 
   onChange() {
-    console.log('data', this.refreshInterval);
-    this.taskMethodCall(this.refreshtime);
-  }
-
-  //Method to AUto Reload
-  taskMethodCall(data: any) {
-    this.refreshInterval = data * 60000;
-    this.timeinterval = setInterval(() => {
-      if (this.serverFlag) {
-        this.getTaskDetails();
-      }
-    }, this.refreshInterval);
-  }
-
-  // To Close Window
-  okErrorBtnClick() {
-    this.isValidateForm = false;
+    if (this.refreshtime >= 1) {
+      console.log('data', this.refreshInterval);
+      this.taskMethodCall(this.refreshtime);
+    } else {
+      this.validationMsgArray.push('time can not be less than 1 min');
+      this.isValidateForm = true;
+    }
   }
 
   //Method To Get All Tasks Details
   getTaskDetails() {
     let taskResponse: any;
+    this.serverFlag = true;
     this.http.get('/api/pipeline/task/findAll').subscribe(
       response => {
         taskResponse = response;
@@ -188,5 +185,22 @@ export class TaskUIComponent implements OnInit {
         }
       }
     );
+  }
+
+  //Method to AUto Reload
+  taskMethodCall(data: any) {
+    this.refreshInterval = null;
+    this.refreshInterval = data * 60000;
+    this.timeintrval = setInterval(() => {
+      console.log('interval', this.refreshInterval);
+      if (this.serverFlag) {
+        this.getTaskDetails();
+      }
+    }, this.refreshInterval);
+  }
+
+  // To Close Window
+  okErrorBtnClick() {
+    this.isValidateForm = false;
   }
 }

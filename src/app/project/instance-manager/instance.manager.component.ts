@@ -1,7 +1,7 @@
 /**
  * Created by Ashwini on 20/2/18.
  */
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CookieService } from 'platform-commons';
 @Component({
@@ -38,19 +38,21 @@ import { CookieService } from 'platform-commons';
      <amexio-image  style="padding-right:10px;"[icon-class]="'fa fa-refresh fa-lg'"
               [tooltip]="'Reload'" (onClick)="getInstanceData()">
               </amexio-image>  
-            </amexio-column>   
-     <amexio-column size="5">
-     Refresh Time:
-         </amexio-column>
+    </amexio-column>   
+    <amexio-column size="4">
+              Refresh Time:
+  </amexio-column>
     <amexio-column size="2">
-    <amexio-number-input  [(ngModel)]="refreshtime" (change)="onChange()"  [has-label]="false">
+    <amexio-number-input  [(ngModel)]="refreshtime" (change)="onChange()"  [has-label]="false"
+    [min-value]="1"
+     [min-error-msg]="'time can not be less than 1 min'">
    </amexio-number-input>
-  
+    </amexio-column>
+    <amexio-column size="1">
+    min
     </amexio-column>
         <amexio-column size="4">
     </amexio-column>
-
-    
             </amexio-row>      
     </amexio-header>
     <amexio-body>
@@ -151,7 +153,7 @@ export class InstanceUIComponent implements OnInit {
   refreshInterval: any;
   refreshtime: number;
   serverFlag: boolean;
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, public cdf: ChangeDetectorRef) {
     //refreshtime is in min
     this.refreshtime = 1;
     this.getInstanceData();
@@ -161,14 +163,19 @@ export class InstanceUIComponent implements OnInit {
 
   ngOnInit() {
     this.instanceMethodCall(this.refreshtime);
+    console.log('data', this.refreshInterval);
   }
 
   ngOnDestroy() {
     clearInterval(this.timeintrval);
   }
   onChange() {
-    console.log('data', this.refreshInterval);
-    this.instanceMethodCall(this.refreshtime);
+    if (this.refreshtime >= 1) {
+      this.instanceMethodCall(this.refreshtime);
+    } else {
+      this.validationMsgArray.push('time can not be less than 1 min');
+      this.isValidateForm = true;
+    }
   }
 
   instanceMethodCall(data: any) {
@@ -176,10 +183,12 @@ export class InstanceUIComponent implements OnInit {
     this.refreshInterval = data * 60000;
     this.timeintrval = setInterval(() => {
       console.log('interval', this.refreshInterval);
+      this.cdf.detectChanges();
       if (this.serverFlag) {
         this.getInstanceData();
       }
     }, this.refreshInterval);
+    console.log();
   }
   okErrorBtnClick() {
     this.isValidateForm = false;
