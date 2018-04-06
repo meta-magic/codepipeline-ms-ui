@@ -45,7 +45,7 @@ import { CookieService } from 'platform-commons';
     <amexio-column size="2">
     <amexio-number-input  [(ngModel)]="refreshtime" (change)="onChange()"  [has-label]="false"
     [min-value]="1"
-     [min-error-msg]="'time can not be less than 1 min'">
+     [min-error-msg]="'time can not be less than 30 sec'">
    </amexio-number-input>
     </amexio-column>
     <amexio-column size="1">
@@ -174,7 +174,7 @@ export class InstanceUIComponent implements OnInit {
       clearInterval(this.timeintrval);
       this.instanceMethodCall(this.refreshtime);
     } else {
-      this.validationMsgArray.push('time can not be less than 1 min');
+      this.validationMsgArray.push('time can not be less than 30 sec');
       this.isValidateForm = true;
     }
   }

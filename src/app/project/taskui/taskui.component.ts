@@ -48,7 +48,7 @@ import { HttpClient } from '@angular/common/http';
     <amexio-column size="2">
     <amexio-number-input  [(ngModel)]="refreshtime" (change)="onChange()"  [has-label]="false"
     [min-value]="1"
-     [min-error-msg]="'time can not be less than 1 min'">
+     [min-error-msg]="'time can not be less than 30 sec'">
    </amexio-number-input>
     </amexio-column>
     <amexio-column size="1">
@@ -158,7 +158,7 @@ export class TaskUIComponent implements OnInit {
       clearInterval(this.timeintrval);
       this.taskMethodCall(this.refreshtime);
     } else {
-      this.validationMsgArray.push('time can not be less than 1 min');
+      this.validationMsgArray.push('time can not be less than 30 sec');
       this.isValidateForm = true;
     }
   }
