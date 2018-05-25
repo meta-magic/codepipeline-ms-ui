@@ -24,6 +24,24 @@ import { HttpClient } from '@angular/common/http';
   .blue {
     color: blue!important;    
   }
+      .tas-header {
+        
+      }
+      .tas-header .inputgroup {
+        white-space: nowrap;
+        display: inline;
+      }
+    .tas-header .inputgroup .input-control {
+      width: 40px!important;
+      padding: 0px!important;
+      line-height: 0!important;
+    }
+      .task-ui {
+        
+      }
+    .task-ui .card-header{
+      display: block;
+    }
   
        `
   ],
@@ -31,34 +49,28 @@ import { HttpClient } from '@angular/common/http';
   template: `
    <amexio-row>
     <amexio-column [size]=12>
+      <div class="task-ui">
     <amexio-card [header]="true"
 [footer]="false"
 [show]="true"
 [body-height]="82">
-    <amexio-header class="instanceManagement">
-      <amexio-row>
-     <amexio-column  size="1">   
-     <amexio-image  style="padding-right:10px;"[icon-class]="'fa fa-refresh fa-lg'"
-              [tooltip]="'Reload'" (onClick)="getTaskDetails()">
-              </amexio-image>  
-            </amexio-column>   
-     <amexio-column size="4">
-              Refresh Time:
-  </amexio-column>
-    <amexio-column size="2">
-    <amexio-number-input  [(ngModel)]="refreshtime" (change)="onChange()"  [has-label]="false"
-    [min-value]="1"
-     [min-error-msg]="'time can not be less than 30 sec'">
-   </amexio-number-input>
-    </amexio-column>
-    <amexio-column size="1">
-    min
-    </amexio-column>
-        <amexio-column size="4">
-    </amexio-column>
-            </amexio-row>      
-
-    </amexio-header>
+        <amexio-header class="instanceManagement" style="display: block!important;">
+          
+          <div style="display: flex;justify-content: space-between;">
+              <div>Task Status</div>
+              <div></div>
+            <div class="tas-header">
+              <amexio-image [icon-class]="'fa fa-refresh fa-lg'" [tooltip]="'Reload'" (onClick)="getTaskDetails()"></amexio-image>
+              Refresh Time
+              <amexio-number-input  [(ngModel)]="refreshtime" (change)="onChange()"  [has-label]="false"
+                                    [min-value]="1"
+                                    [min-error-msg]="'time can not be less than 30 sec'">
+              </amexio-number-input>
+              min
+            </div>
+          </div>
+        </amexio-header>
+    
     <amexio-body>
   <amexio-row>
   <amexio-column [size] =12 >
@@ -110,6 +122,7 @@ import { HttpClient } from '@angular/common/http';
  </amexio-row>
  </amexio-body>
  </amexio-card>
+      </div>
  </amexio-column>
  <amexio-notification [data]="messageArray" [vertical-position]="'top'" [horizontal-position]="'right'" [auto-dismiss-msg]="true" [auto-dismiss-msg-interval]="4000">
         </amexio-notification>
