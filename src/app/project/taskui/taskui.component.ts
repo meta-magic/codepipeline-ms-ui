@@ -24,25 +24,11 @@ import { HttpClient } from '@angular/common/http';
   .blue {
     color: blue!important;    
   }
-      .tas-header {
-        
-      }
-      .tas-header .inputgroup {
-        white-space: nowrap;
-        display: inline;
-      }
-    .tas-header .inputgroup .input-control {
-      width: 40px!important;
-      padding: 0px!important;
-      line-height: 0!important;
-    }
-      .task-ui {
-        
-      }
-    .task-ui .card-header{
-      display: block;
-    }
-  
+
+.node-style {
+white-space: nowrap;
+display: inline; }
+     
        `
   ],
 
@@ -60,13 +46,13 @@ import { HttpClient } from '@angular/common/http';
               <div>Task Status</div>
               <div></div>
             <div class="tas-header">
-              <amexio-image [icon-class]="'fa fa-refresh fa-lg'" [tooltip]="'Reload'" (onClick)="getTaskDetails()"></amexio-image>
-              Refresh Time
+              <amexio-image [icon-class]="'fa fa-refresh 2x'" [tooltip]="'Reload'" (onClick)="getTaskDetails()"></amexio-image>     
+               <amexio-label style="display: inline;">Refresh Time:</amexio-label>
+               <amexio-label style="display: inline;float: right;">min</amexio-label>
               <amexio-number-input  [(ngModel)]="refreshtime" (change)="onChange()"  [has-label]="false"
                                     [min-value]="1"
                                     [min-error-msg]="'time can not be less than 30 sec'">
               </amexio-number-input>
-              min
             </div>
           </div>
         </amexio-header>
@@ -75,7 +61,6 @@ import { HttpClient } from '@angular/common/http';
   <amexio-row>
   <amexio-column [size] =12 >
    <amexio-datagrid
-   title="Task Status"
    [data]="taskData"
    [page-size] = "10"
    [height]="300"
