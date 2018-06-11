@@ -190,7 +190,6 @@ export class TaskUIComponent implements OnInit {
     this.refreshInterval = null;
     this.refreshInterval = data * 60000;
     this.timeintrval = setInterval(() => {
-      console.log('interval', this.refreshInterval);
       if (this.serverFlag) {
         this.getTaskDetails();
       }
