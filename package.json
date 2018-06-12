@@ -26,7 +26,11 @@
   },
   "ngPackage": {
     "lib": {
-      "entryFile": "src/index.ts"
+      "entryFile": "src/index.ts",
+      "externals": {
+        "amexio-ng-extensions": "http://localhost/desireplatform/amexio-builds/amexio-ng-extensions.tgz",
+        "platform-commons": "http://localhost/desireplatform/micro-ui-libs/platform-commons.tgz"
+      }
     }
   },
   "lint-staged": {
@@ -123,8 +127,8 @@
     "@angular/forms": "^5.2.4",
     "@angular/http": "^5.2.4",
     "@angular/router": "^5.2.4",
-    "amexio-ng-extensions": "^4.0.10",
     "font-awesome": "^4.7.0",
+    "amexio-ng-extensions": "http://localhost/desireplatform/amexio-builds/amexio-ng-extensions.tgz",
     "platform-commons": "http://localhost/desireplatform/micro-ui-libs/platform-commons.tgz"
   }
 }
