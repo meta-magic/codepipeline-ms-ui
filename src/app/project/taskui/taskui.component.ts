@@ -36,6 +36,7 @@ display: inline; }
   template: `
    <amexio-row>
     <amexio-column [size]=12>
+                       <div class="loadingnav" *ngIf="loaderService.isLoading"></div>
       <div class="task-ui">
     <amexio-card [header]="true"
 [footer]="false"
