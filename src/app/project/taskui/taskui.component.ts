@@ -4,6 +4,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'platform-commons';
 import { HttpClient } from '@angular/common/http';
+import { LoaderService } from 'platform-commons';
 
 @Component({
   selector: 'task-ui',
@@ -134,7 +135,7 @@ export class TaskUIComponent implements OnInit {
   refreshInterval: any;
   refreshtime: number;
   serverFlag: boolean;
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, public loaderService: LoaderService) {
     this.refreshtime = 1;
     this.getTaskDetails();
     this.taskData = [];
@@ -165,6 +166,7 @@ export class TaskUIComponent implements OnInit {
   getTaskDetails() {
     let taskResponse: any;
     this.serverFlag = true;
+    this.loaderService.showLoader();
     this.http.get('/api/pipeline/task/findAll').subscribe(
       response => {
         taskResponse = response;
@@ -173,13 +175,16 @@ export class TaskUIComponent implements OnInit {
         this.validationMsgArray.push('Unable to connect to server');
         this.isValidateForm = true;
         this.serverFlag = false;
+        this.loaderService.hideLoader();
       },
       () => {
         if (taskResponse.success) {
           this.taskData = taskResponse.response;
+          this.loaderService.hideLoader();
         } else {
           this.validationMsgArray.push(taskResponse.errorMessage);
           this.isValidateForm = true;
+          this.loaderService.hideLoader();
         }
       }
     );
