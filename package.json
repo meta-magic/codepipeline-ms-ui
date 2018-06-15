@@ -6,6 +6,7 @@
     "start": "concurrently --raw \"webpack-dev-server --open\" \"npm run test:watch\"",
     "build:demo": "webpack --env=production",
     "build:dist": "ng-packagr -p package.json && npm run copyasset",
+    "build:local": "ng-packagr -p package.json && npm run && cd dist && npm pack && mv codepipelinemsui-0.0.0.tgz codepipelinemsui.tgz",                                    
     "copyasset": "sh copyassets.sh",
     "build:clean": "del-cli dist",
     "test": "karma start --single-run && npm run build:dist && npm run build:clean",
@@ -26,7 +27,11 @@
   },
   "ngPackage": {
     "lib": {
-      "entryFile": "src/index.ts"
+      "entryFile": "src/index.ts",
+      "externals": {
+        "amexio-ng-extensions": "http://localhost/desireplatform/amexio-builds/amexio-ng-extensions.tgz",
+        "platform-commons": "http://localhost/desireplatform/micro-ui-libs/platform-commons.tgz"
+      }
     }
   },
   "lint-staged": {
@@ -123,8 +128,8 @@
     "@angular/forms": "^5.2.4",
     "@angular/http": "^5.2.4",
     "@angular/router": "^5.2.4",
-    "amexio-ng-extensions": "^4.0.10",
     "font-awesome": "^4.7.0",
+    "amexio-ng-extensions": "http://localhost/desireplatform/amexio-builds/amexio-ng-extensions.tgz",
     "platform-commons": "http://localhost/desireplatform/micro-ui-libs/platform-commons.tgz"
   }
 }
