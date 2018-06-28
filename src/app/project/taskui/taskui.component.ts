@@ -1,11 +1,12 @@
 /**
- * Created by rashmi on 15/2/18.
+ * Created by Ashwini on 15/2/18.
  */
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'platform-commons';
 import { HttpClient } from '@angular/common/http';
 import { LoaderService } from 'platform-commons';
-
+import { NotificationComponent } from '../notification.component';
+import { NotificationService } from 'platform-commons';
 @Component({
   selector: 'task-ui',
   styles: [
@@ -111,36 +112,26 @@ display: inline; }
  </amexio-card>
       </div>
  </amexio-column>
- <amexio-notification [data]="messageArray" [vertical-position]="'top'" [horizontal-position]="'right'" [auto-dismiss-msg]="true" [auto-dismiss-msg-interval]="4000">
-        </amexio-notification>
  </amexio-row>
- <amexio-dialogue [show-dialogue]="isValidateForm" [message-type]="'error'" [closable]="true" [title]="'Error'" [type]="'alert'" [custom]="true" (close)="isValidateForm = !isValidateForm">
-<amexio-body>
-    <ol>
-        <li *ngFor="let msgObj of validationMsgArray let index=index">{{msgObj}}</li>
-    </ol>
-</amexio-body>
-<amexio-action>
-    <amexio-button type="primary" (onClick)="okErrorBtnClick()" [label]="'Ok'">
-    </amexio-button>
-</amexio-action>
-</amexio-dialogue>
+ <app-notification></app-notification>
+ 
  `
 })
 export class TaskUIComponent implements OnInit {
   taskData: any;
-  messageArray: any[];
-  validationMsgArray: any = [];
-  isValidateForm: boolean = false;
+  msgData: any = [];
   timeintrval: any;
   refreshInterval: any;
   refreshtime: number;
   serverFlag: boolean;
-  constructor(private http: HttpClient, public loaderService: LoaderService) {
+  constructor(
+    private http: HttpClient,
+    public _notificationService: NotificationService,
+    public loaderService: LoaderService
+  ) {
     this.refreshtime = 1;
     this.getTaskDetails();
     this.taskData = [];
-    this.messageArray = [];
   }
 
   //Initialized Method
@@ -151,15 +142,24 @@ export class TaskUIComponent implements OnInit {
   //Method to Clear interval
   ngOnDestroy() {
     clearInterval(this.timeintrval);
+    console.log('clearinterval');
   }
-
+  createErrorData() {
+    let errorData: any[] = [];
+    let errorObj: any = {};
+    errorObj['data'] = [];
+    errorObj.data = this.msgData;
+    errorData.push(errorObj);
+    this._notificationService.showerrorData('', errorData);
+  }
   onChange() {
     if (this.refreshtime >= 0.5) {
       clearInterval(this.timeintrval);
       this.taskMethodCall(this.refreshtime);
     } else {
-      this.validationMsgArray.push('time can not be less than 30 sec');
-      this.isValidateForm = true;
+      this.msgData.push('time can not be less than 30 sec');
+      // this.isValidateForm = true;
+      this._notificationService.showWarningData(this.msgData);
     }
   }
 
@@ -173,8 +173,9 @@ export class TaskUIComponent implements OnInit {
         taskResponse = response;
       },
       error => {
-        this.validationMsgArray.push('Unable to connect to server');
-        this.isValidateForm = true;
+        this.msgData.push('Unable to connect to server');
+        // this.isValidateForm = true;
+        this.createErrorData();
         this.serverFlag = false;
         this.loaderService.hideLoader();
       },
@@ -183,8 +184,9 @@ export class TaskUIComponent implements OnInit {
           this.taskData = taskResponse.response;
           this.loaderService.hideLoader();
         } else {
-          this.validationMsgArray.push(taskResponse.errorMessage);
-          this.isValidateForm = true;
+          this.msgData.push(taskResponse.errorMessage);
+          // this.isValidateForm = true;
+          this.createErrorData();
           this.loaderService.hideLoader();
         }
       }
@@ -203,7 +205,7 @@ export class TaskUIComponent implements OnInit {
   }
 
   // To Close Window
-  okErrorBtnClick() {
-    this.isValidateForm = false;
-  }
+  // okErrorBtnClick() {
+  //   this.isValidateForm = false;
+  // }
 }
