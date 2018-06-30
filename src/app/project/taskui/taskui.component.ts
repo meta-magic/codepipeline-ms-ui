@@ -150,7 +150,7 @@ export class TaskUIComponent implements OnInit {
     errorObj['data'] = [];
     errorObj.data = this.msgData;
     errorData.push(errorObj);
-    this._notificationService.showerrorData('', errorData);
+    this._notificationService.showerrorData('Error Message', errorData);
   }
   onChange() {
     if (this.refreshtime >= 0.5) {

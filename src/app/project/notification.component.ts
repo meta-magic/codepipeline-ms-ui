@@ -31,11 +31,11 @@ import { NotificationService } from 'platform-commons';
         [auto-dismiss-msg]="true"
         [auto-dismiss-msg-interval]="6000">
         <ng-template #amexioNotificationTemp let-data="data" >
-                   <amexio-box>
+           <amexio-box [box-width]="'350px'">
               <amexio-image [icon-class]="'	fa fa-check'" style="font-size: 25px;">
-              </amexio-image> &nbsp;&nbsp;
+              </amexio-image>
               <amexio-label font-color="white" >{{data}}</amexio-label><br/>
-           </amexio-box>
+          </amexio-box>
         </ng-template>
       </amexio-notification>
     <amexio-notification
