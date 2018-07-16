@@ -1,7 +1,7 @@
 /**
  * Created by Ashwini on 15/2/18.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CookieService } from 'platform-commons';
 import { HttpClient } from '@angular/common/http';
 import { LoaderService } from 'platform-commons';
@@ -78,7 +78,7 @@ display: inline; }
     </amexio-data-table-column>
     <amexio-data-table-column [data-index]="'domain'"
       [data-type]="'string'" [hidden]="false"
-      [text]="'Domain'">
+      [text]="'Sub Domain'">
     </amexio-data-table-column>
     <amexio-data-table-column [data-index]="'taskName'"
       [data-type]="'string'" [hidden]="false"
@@ -89,7 +89,7 @@ display: inline; }
       [text]="'Status'">
       <ng-template #amexioBodyTmpl let-row="row">
       <a class="fa fa-circle fa-lg"
-     [ngClass]="{'yellow': row.statusCode==0 , 'blue': row.statusCode ==1 , 'green': row.statusCode ==2 , 'red' : row.statusCode ==3}"></a>
+     [ngClass]="{'yellow': row.statusCode==0 , 'blue': row.statusCode ==1 , 'green': row.statusCode ==5 , 'red' : row.statusCode ==3}"></a>
        &nbsp;{{row.status}} 
    </ng-template>
     </amexio-data-table-column>
@@ -142,7 +142,6 @@ export class TaskUIComponent implements OnInit {
   //Method to Clear interval
   ngOnDestroy() {
     clearInterval(this.timeintrval);
-    console.log('clearinterval');
   }
   createErrorData() {
     let errorData: any[] = [];
