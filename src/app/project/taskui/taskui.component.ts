@@ -84,6 +84,10 @@ display: inline; }
       [data-type]="'string'" [hidden]="false"
       [text]="'Task Name'">
     </amexio-data-table-column>
+      <amexio-data-table-column [data-index]="'Date'"
+      [data-type]="'string'" [hidden]="false"
+      [text]="'Date'">
+    </amexio-data-table-column>
     <amexio-data-table-column [data-index]="'status'"
       [data-type]="'string'" [hidden]="false"
       [text]="'Status'">
@@ -164,6 +168,7 @@ export class TaskUIComponent implements OnInit {
 
   //Method To Get All Tasks Details
   getTaskDetails() {
+    this.taskData = [];
     let taskResponse: any;
     this.serverFlag = true;
     this.loaderService.showLoader();
@@ -180,8 +185,9 @@ export class TaskUIComponent implements OnInit {
       },
       () => {
         if (taskResponse.success) {
-          this.taskData = taskResponse.response;
+          let task = taskResponse.response;
           this.loaderService.hideLoader();
+          this.iterateData(task);
         } else {
           this.msgData.push(taskResponse.errorMessage);
           // this.isValidateForm = true;
@@ -190,6 +196,28 @@ export class TaskUIComponent implements OnInit {
         }
       }
     );
+  }
+
+  iterateData(data: any) {
+    this.taskData = [];
+    data.forEach((obj: any) => {
+      let date = new Date(obj.auditDetails.createdDate);
+      const actualCreatedDate = date.toLocaleDateString();
+      const actualTime = date.toLocaleTimeString();
+      const obj1 = {
+        type: obj.type,
+        boundedContext: obj.boundedContext,
+        domain: obj.domain,
+        taskName: obj.taskName,
+        status: obj.status,
+        statusCode: obj.statusCode,
+        statusMessage: obj.statusMessage,
+        errorMessage: obj.errorMessage,
+        Date: actualCreatedDate,
+        Time: actualTime
+      };
+      this.taskData.push(obj1);
+    });
   }
 
   //Method to AUto Reload
