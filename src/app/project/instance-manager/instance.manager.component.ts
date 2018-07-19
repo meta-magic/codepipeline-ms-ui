@@ -64,7 +64,7 @@ import { NotificationService } from 'platform-commons';
                 [data]="intsanceData"
                 [page-size] = "10"
                 [height]="300"
-                [enable-data-filter]="true">
+                [enable-data-filter]="false">
          <amexio-data-table-column [data-index]="'instanceId'" [width]="25"
          [data-type]="'string'" [hidden]="false" [text]="'ID'">
         </amexio-data-table-column>

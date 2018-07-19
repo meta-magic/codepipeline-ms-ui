@@ -67,7 +67,8 @@ display: inline; }
    [data]="taskData"
    [page-size] = "10"
    [height]="300"
-   [enable-data-filter]="true">
+   [global-filter]="false" 
+   [enable-data-filter]="false">
     <amexio-data-table-column [data-index]="'type'"
       [data-type]="'string'" [hidden]="false"
       [text]="'Type'">
@@ -87,6 +88,10 @@ display: inline; }
       <amexio-data-table-column [data-index]="'Date'"
       [data-type]="'string'" [hidden]="false"
       [text]="'Date'">
+    </amexio-data-table-column>
+    <amexio-data-table-column [data-index]="'Time'"
+      [data-type]="'string'" [hidden]="false"
+      [text]="'Time'">
     </amexio-data-table-column>
     <amexio-data-table-column [data-index]="'status'"
       [data-type]="'string'" [hidden]="false"
