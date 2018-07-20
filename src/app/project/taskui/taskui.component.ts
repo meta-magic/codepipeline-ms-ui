@@ -50,12 +50,12 @@ display: inline; }
               <div></div>
             <div class="tas-header">
               <amexio-image [icon-class]="'fa fa-refresh 2x'" [tooltip]="'Reload'" (onClick)="getTaskDetails()"></amexio-image>     
-               <amexio-label style="display: inline;">Refresh Time:</amexio-label>
+               <!--<amexio-label style="display: inline;">Refresh Time:</amexio-label>
                <amexio-label style="display: inline;float: right;">min</amexio-label>
               <amexio-number-input  [(ngModel)]="refreshtime" (change)="onChange()"  [has-label]="false"
                                     [min-value]="1"
                                     [min-error-msg]="'time can not be less than 30 sec'">
-              </amexio-number-input>
+              </amexio-number-input>-->
             </div>
           </div>
         </amexio-header>
@@ -139,18 +139,18 @@ export class TaskUIComponent implements OnInit {
     public loaderService: LoaderService
   ) {
     this.refreshtime = 1;
-    this.getTaskDetails();
     this.taskData = [];
   }
 
   //Initialized Method
   ngOnInit() {
-    this.taskMethodCall(this.refreshtime);
+    // this.taskMethodCall(this.refreshtime);
+    this.getTaskDetails();
   }
 
   //Method to Clear interval
   ngOnDestroy() {
-    clearInterval(this.timeintrval);
+    // clearInterval(this.timeintrval);
   }
   createErrorData() {
     let errorData: any[] = [];
@@ -161,14 +161,15 @@ export class TaskUIComponent implements OnInit {
     this._notificationService.showerrorData('Error Message', errorData);
   }
   onChange() {
-    if (this.refreshtime >= 0.5) {
-      clearInterval(this.timeintrval);
-      this.taskMethodCall(this.refreshtime);
-    } else {
-      this.msgData.push('time can not be less than 30 sec');
-      // this.isValidateForm = true;
-      this._notificationService.showWarningData(this.msgData);
-    }
+    // if (this.refreshtime >= 0.5) {
+    //   clearInterval(this.timeintrval);
+    //   this.taskMethodCall(this.refreshtime);
+    // } else {
+    //   this.msgData.push('time can not be less than 30 sec');
+    //   // this.isValidateForm = true;
+    //   this._notificationService.showWarningData(this.msgData);
+    // }
+    this.getTaskDetails();
   }
 
   //Method To Get All Tasks Details
