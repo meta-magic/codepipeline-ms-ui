@@ -66,7 +66,6 @@ display: inline; }
    <amexio-datagrid
    [data]="taskData"
    [page-size] = "10"
-   [height]="300"
    [global-filter]="false" 
    [enable-data-filter]="false">
     <amexio-data-table-column [data-index]="'type'"
