@@ -78,7 +78,7 @@ display: inline; }
     </amexio-data-table-column>
     <amexio-data-table-column [data-index]="'domain'"
       [data-type]="'string'" [hidden]="false"
-      [text]="'Sub Domain'">
+      [text]="'Module'">
     </amexio-data-table-column>
     <amexio-data-table-column [data-index]="'taskName'"
       [data-type]="'string'" [hidden]="false"
