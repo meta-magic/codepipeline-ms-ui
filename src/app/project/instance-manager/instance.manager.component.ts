@@ -4,6 +4,8 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CookieService } from 'platform-commons';
+import { NotificationComponent } from '../notification.component';
+import { NotificationService } from 'platform-commons';
 @Component({
   selector: 'instance-ui',
   styles: [
@@ -62,7 +64,7 @@ import { CookieService } from 'platform-commons';
                 [data]="intsanceData"
                 [page-size] = "10"
                 [height]="300"
-                [enable-data-filter]="true">
+                [enable-data-filter]="false">
          <amexio-data-table-column [data-index]="'instanceId'" [width]="25"
          [data-type]="'string'" [hidden]="false" [text]="'ID'">
         </amexio-data-table-column>
@@ -101,6 +103,12 @@ import { CookieService } from 'platform-commons';
         <amexio-data-table-column [data-index]="'launchTime'" [width]="15"
          [data-type]="'string'" [hidden]="true" [text]="'Launch Time'">
         </amexio-data-table-column>
+         <amexio-data-table-column [data-index]="'logout'" [width]="15"
+         [data-type]="'string'" [hidden]="true" [text]="'Logout'">
+        </amexio-data-table-column>
+        <amexio-data-table-column [data-index]="'login'" [width]="15"
+         [data-type]="'string'" [hidden]="true" [text]="'Login'">
+        </amexio-data-table-column>
         <amexio-data-table-column [width]="15"
                     [data-index]="'instanceAction'"
                     [data-type]="'string'" [hidden]="false"
@@ -126,56 +134,53 @@ import { CookieService } from 'platform-commons';
     </amexio-body>
 </amexio-card>
     </amexio-column>
-    <amexio-notification [data]="messageArray" [vertical-position]="'top'" [horizontal-position]="'right'" [auto-dismiss-msg]="true" [auto-dismiss-msg-interval]="4000">
-        </amexio-notification>
+   <app-notification></app-notification>
     </amexio-row>
-    <amexio-dialogue [show-dialogue]="isValidateForm" [message-type]="'error'" [closable]="true" [title]="'Error'" [type]="'alert'" [custom]="true" (close)="isValidateForm = !isValidateForm">
-<amexio-body>
-    <ol>
-        <li *ngFor="let msgObj of validationMsgArray let index=index">{{msgObj}}</li>
-    </ol>
-</amexio-body>
-<amexio-action>
-    <amexio-button type="primary" (onClick)="okErrorBtnClick()" [label]="'Ok'">
-    </amexio-button>
-</amexio-action>
-</amexio-dialogue>   
 
 
   `
 })
 export class InstanceUIComponent implements OnInit {
   intsanceData: any;
-  messageArray: any[];
-  validationMsgArray: any = [];
-  isValidateForm: boolean = false;
+  msgData: any[];
   timeintrval: any;
   refreshInterval: any;
   refreshtime: number;
   serverFlag: boolean;
-  constructor(private http: HttpClient, public cdf: ChangeDetectorRef) {
+  constructor(
+    private http: HttpClient,
+    public cdf: ChangeDetectorRef,
+    public _notificationService: NotificationService
+  ) {
     //refreshtime is in min
     this.refreshtime = 1;
     this.getInstanceData();
     this.intsanceData = [];
-    this.messageArray = [];
+    this.msgData = [];
   }
 
   ngOnInit() {
     this.instanceMethodCall(this.refreshtime);
-    console.log('data', this.refreshInterval);
   }
 
   ngOnDestroy() {
     clearInterval(this.timeintrval);
+  }
+  createErrorData() {
+    let errorData: any[] = [];
+    let errorObj: any = {};
+    errorObj['data'] = [];
+    errorObj.data = this.msgData;
+    errorData.push(errorObj);
+    this._notificationService.showerrorData('Error Message', errorData);
   }
   onChange() {
     if (this.refreshtime >= 0.5) {
       clearInterval(this.timeintrval);
       this.instanceMethodCall(this.refreshtime);
     } else {
-      this.validationMsgArray.push('time can not be less than 30 sec');
-      this.isValidateForm = true;
+      this.msgData.push('time can not be less than 30 sec');
+      this._notificationService.showWarningData(this.msgData);
     }
   }
 
@@ -183,20 +188,20 @@ export class InstanceUIComponent implements OnInit {
     this.refreshInterval = null;
     this.refreshInterval = data * 60000;
     this.timeintrval = setInterval(() => {
-      console.log('interval', this.refreshInterval);
       this.cdf.detectChanges();
       if (this.serverFlag) {
         this.getInstanceData();
       }
     }, this.refreshInterval);
   }
-  okErrorBtnClick() {
-    this.isValidateForm = false;
-    this.validationMsgArray = [];
-  }
+  // okErrorBtnClick() {
+  //   this.isValidateForm = false;
+  //   this.validationMsgArray = [];
+  // }
   onStop(row: any) {
     if (row.instanceState === 'stopping' || row.instanceState === 'stopped') {
-      this.messageArray.push('Instance is already stopping/stopped');
+      this.msgData.push('Instance is already stopping/stopped');
+      this._notificationService.showWarningData(this.msgData);
     } else {
       let response: any;
       const requestJson = {
@@ -210,16 +215,18 @@ export class InstanceUIComponent implements OnInit {
             response = res;
           },
           err => {
-            this.validationMsgArray.push('Unable to connect to server');
-            this.isValidateForm = true;
+            this.msgData.push('Unable to connect to server');
+            this.createErrorData();
           },
           () => {
             if (response.success) {
               this.getInstanceData();
-              this.messageArray.push(response.successMessage);
+              this.msgData.push(response.successMessage);
+              this._notificationService.showSuccessData(this.msgData);
             } else {
-              this.validationMsgArray.push(response.errorMessage);
-              this.isValidateForm = true;
+              this.msgData.push(response.errorMessage);
+              // this.isValidateForm = true;
+              this.createErrorData();
             }
           }
         );
@@ -228,7 +235,8 @@ export class InstanceUIComponent implements OnInit {
 
   onStart(row: any) {
     if (row.instanceState === 'running' || row.instanceState === 'pending') {
-      this.messageArray.push('Instance is already running/pending');
+      this.msgData.push('Instance is already running/pending');
+      this._notificationService.showWarningData(this.msgData);
     } else {
       let response: any;
       const requestJson = {
@@ -242,16 +250,19 @@ export class InstanceUIComponent implements OnInit {
             response = res;
           },
           err => {
-            this.validationMsgArray.push('Unable to connect to server');
-            this.isValidateForm = true;
+            this.msgData.push('Unable to connect to server');
+            // this.isValidateForm = true;
+            this.createErrorData();
           },
           () => {
             if (response.success) {
-              this.messageArray.push(response.successMessage);
+              this.msgData.push(response.successMessage);
+              this._notificationService.showSuccessData(this.msgData);
               this.getInstanceData();
             } else {
-              this.validationMsgArray.push(response.errorMessage);
-              this.isValidateForm = true;
+              this.msgData.push(response.errorMessage);
+              // this.isValidateForm = true;
+              this.createErrorData();
             }
           }
         );
@@ -276,16 +287,18 @@ export class InstanceUIComponent implements OnInit {
         instancResponse = response;
       },
       error => {
-        this.validationMsgArray.push('Unable to connect to server');
-        this.isValidateForm = true;
+        this.msgData.push('Unable to connect to server');
+        // this.isValidateForm = true;
+        this.createErrorData();
         this.serverFlag = false;
       },
       () => {
         if (instancResponse.success) {
           this.intsanceData = instancResponse.response;
         } else {
-          this.validationMsgArray.push(instancResponse.errorMessage);
-          this.isValidateForm = true;
+          this.msgData.push(instancResponse.errorMessage);
+          // this.isValidateForm = true;
+          this.createErrorData();
         }
       }
     );
