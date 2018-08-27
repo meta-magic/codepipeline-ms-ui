@@ -8,6 +8,7 @@ import { TaskUIComponent } from './app/project/taskui/taskui.component';
 import { InstanceUIComponent } from './app/project/instance-manager/instance.manager.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PlatformCommmonsModule } from 'platform-commons';
+import { SourceCodeComponent } from './app/project/sourceCodeConfigration/sourceCode.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,10 @@ const routes: Routes = [
   {
     path: 'instance-manager',
     component: InstanceUIComponent
+  },
+  {
+    path: 'gitConfigration',
+    component: SourceCodeComponent
   }
 ];
 
@@ -29,8 +34,13 @@ const routes: Routes = [
     PlatformCommmonsModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [TaskUIComponent, InstanceUIComponent, NotificationComponent],
-  exports: [RouterModule]
+  declarations: [
+    TaskUIComponent,
+    InstanceUIComponent,
+    NotificationComponent,
+    SourceCodeComponent
+  ],
+  exports: [RouterModule, TaskUIComponent, InstanceUIComponent]
 })
 export class CodePipeLineMsUiModule {
   static forRoot(): ModuleWithProviders {
