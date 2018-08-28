@@ -87,7 +87,7 @@ import { any } from 'codelyzer/util/function';
 </amexio-checkbox>
                         </amexio-column>
                         <amexio-column [size]="2">
-                            <amexio-button (onClick)="onInitialize()" [label]="'Initialize'" [type]="'primary'" [tooltip]="'Initialize'" [size]="'default'" [disabled]="false">
+                            <amexio-button (onClick)="onInitialize()" [disabled]="initailizeDisable" [label]="'Initialize'" [type]="'primary'" [tooltip]="'Initialize'" [size]="'default'">
                             </amexio-button>
                         </amexio-column>
 
@@ -250,8 +250,10 @@ export class SourceCodeComponent implements OnInit {
   showCommitAllWindow: boolean = false;
   showInitializeWindow: boolean = false;
   showPullWindow: boolean = false;
+  // repositoryInitialized:boolean;
   validationMsgArray: any;
   URLDisabled: boolean;
+  initailizeDisable: boolean;
   msgData: any = [];
 
   constructor(
@@ -323,6 +325,9 @@ export class SourceCodeComponent implements OnInit {
                 responseData.response.repositioryDetails.repositoryType;
               this.URLDisabled = true;
               this.respositoryTypeData.response.data.disabled = true;
+              if (responseData.response.repositioryDetails.isInitialize) {
+                this.initailizeDisable = true;
+              }
             }
           }
         } else {
@@ -413,6 +418,7 @@ export class SourceCodeComponent implements OnInit {
         error => {},
         () => {
           if (response.success) {
+            this.commitAllDataClass.commitMessage = '';
             this.closeCommitAllWindow();
             this.msgData = [];
             this.msgData.push(response.successMessage);
@@ -472,6 +478,7 @@ export class SourceCodeComponent implements OnInit {
             this.msgData = [];
             this.msgData.push(response.successMessage);
             this._notificationService.showSuccessData(this.msgData);
+            this.initailizeDisable = true;
           }
         }
       );
@@ -529,11 +536,11 @@ export class GitModel {
   repositoryType: string;
   repositoryUrl: string;
 
-  isInitialize: boolean;
+  isInitialize: false;
   constructor() {
     this.repositoryUrl = '';
     this.repositoryType = '1';
-    this.isInitialize = true;
+    this.isInitialize = false;
   }
 }
 export class InitializeDataModel {
