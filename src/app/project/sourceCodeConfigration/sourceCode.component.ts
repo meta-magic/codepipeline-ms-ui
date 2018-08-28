@@ -16,7 +16,7 @@ import { any } from 'codelyzer/util/function';
   //language=Angular2HTML
   template: `
 <amexio-tab-view [closable]="false">
-    <amexio-tab title="Git Configration" [active]="true">
+    <amexio-tab title="Git Configration" [disabled]="gitdisabledFlag" [active]="gitActiveTab">
 
         <amexio-form [form-name]="'validateForm'" [body-height]="80" [header]="false" [show-error]="true" [footer-align]="'right'">
             <amexio-form-body>
@@ -50,7 +50,7 @@ import { any } from 'codelyzer/util/function';
         </amexio-form>
 
     </amexio-tab>
-    <amexio-tab title="Action" [disabled]="tabdisabledFlag">
+    <amexio-tab title="Action" [disabled]="tabdisabledFlag" [active]="actionActiveTab">
         <amexio-card [header]="false" [footer]="false" [footer-align]="'right'" [body-height]="80">
             <amexio-body>
                 <amexio-row>
@@ -108,7 +108,7 @@ import { any } from 'codelyzer/util/function';
 
                     </amexio-row>
                 </amexio-fieldset>
-                 <amexio-fieldset [collapsible]="true" title="pull">
+                 <amexio-fieldset [collapsible]="true" title="Pull">
 
                     <amexio-row>
                         <amexio-column [size]="10">
@@ -242,6 +242,9 @@ export class SourceCodeComponent implements OnInit {
   pullDataClass: PullDataClass;
 
   checkWithDisable: boolean = true;
+  gitdisabledFlag: boolean;
+  gitActiveTab: boolean;
+  actionActiveTab: boolean;
   respositoryTypeData: any;
   tabdisabledFlag: boolean;
   showCommitAllWindow: boolean = false;
@@ -300,15 +303,20 @@ export class SourceCodeComponent implements OnInit {
       err => {},
       () => {
         if (responseData.success) {
-          // repository is present i.e firstCommit = false
           if (responseData.response) {
             if (
               responseData.response.repositioryDetails == '' ||
               responseData.response.repositioryDetails == null
             ) {
               this.tabdisabledFlag = true;
+              this.gitActiveTab = true;
+              this.actionActiveTab = false;
+              this.gitdisabledFlag = false;
             } else {
               this.tabdisabledFlag = false;
+              this.gitActiveTab = false;
+              this.actionActiveTab = true;
+              this.gitdisabledFlag = true;
               this.initailiseDataModel.repositoryUrl =
                 responseData.response.repositioryDetails.repositoryUrl;
               this.initailiseDataModel.repositoryType =
@@ -534,6 +542,7 @@ export class InitializeDataModel {
   repositoryUsername: string;
   repositoryPassword: string;
   isInitialize: boolean;
+
   constructor() {
     this.repositoryUrl = '';
     this.repositoryType = '';
