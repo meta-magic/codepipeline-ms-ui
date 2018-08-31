@@ -13,10 +13,7 @@ import { NotificationService } from 'platform-commons';
         [auto-dismiss-msg]="true"
         [auto-dismiss-msg-interval]="6000">
         <ng-template #amexioNotificationTemp let-data="data" >
-            <amexio-box  padding="true" [box-width]="'350px'">
-              <amexio-image [icon-class]="'	fa fa-times-circle-o'" style="font-size: 25px;">
-              </amexio-image>
-           
+            <amexio-box  padding="true" [box-width]="'350px'">           
               <amexio-label font-color="white">{{_notificationService.title}}</amexio-label><br/>            
               <amexio-label font-color="white" *ngFor="let msgObj of data.data" >{{msgObj}}</amexio-label><br/>
             </amexio-box>
@@ -32,8 +29,6 @@ import { NotificationService } from 'platform-commons';
         [auto-dismiss-msg-interval]="6000">
         <ng-template #amexioNotificationTemp let-data="data" >
            <amexio-box [box-width]="'350px'">
-              <amexio-image [icon-class]="'	fa fa-check'" style="font-size: 25px;">
-              </amexio-image>
               <amexio-label font-color="white" >{{data}}</amexio-label><br/>
           </amexio-box>
         </ng-template>

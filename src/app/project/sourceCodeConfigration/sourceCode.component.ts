@@ -5,6 +5,7 @@ import {
   ComponentFactoryResolver
 } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { LoaderService } from 'platform-commons';
 import { RequestOptions } from '@angular/http';
 import { CookieService } from 'platform-commons';
 import { clearImmediate } from 'timers';
@@ -15,8 +16,9 @@ import { any } from 'codelyzer/util/function';
   selector: 'sourceCode',
   //language=Angular2HTML
   template: `
+     <div class="loadingnav" *ngIf="loaderService.isLoading"></div>
 <amexio-tab-view [closable]="false">
-    <amexio-tab title="Git Configration" [disabled]="gitdisabledFlag" [active]="gitActiveTab">
+    <amexio-tab title="Git Configuration" [disabled]="gitdisabledFlag" [active]="gitActiveTab">
 
         <amexio-form [form-name]="'validateForm'" [body-height]="80" [header]="false" [show-error]="true" [footer-align]="'right'">
             <amexio-form-body>
@@ -41,7 +43,8 @@ import { any } from 'codelyzer/util/function';
             <amexio-form-action>
 
                 <amexio-button [label]="'save'" [type]="'primary'" [tooltip]="'Save'" [size]="'default'" [icon]="'fa fa-save'" [disabled]="false"
-                    [form-bind]="'validateForm'" (onClick)="onSave()">
+                      [loading]="SaveasyncFlag"
+  [form-bind]="'validateForm'" (onClick)="onSave()">
                 </amexio-button>
 
 
@@ -82,12 +85,12 @@ import { any } from 'codelyzer/util/function';
 </amexio-box>
                         </amexio-column>
                         <amexio-column [size]="2">
-                        <amexio-checkbox [disabled]="true"  [field-label]="'clone/push'"
+                        <amexio-checkbox [disabled]="true"  [field-label]="'Clone/Push'"
                         [(ngModel)]="checkWithDisable">
 </amexio-checkbox>
                         </amexio-column>
                         <amexio-column [size]="2">
-                            <amexio-button (onClick)="onInitialize()" [disabled]="initailizeDisable" [label]="'Initialize'" [type]="'primary'" [tooltip]="'Initialize'" [size]="'default'">
+                            <amexio-button (onClick)="onInitialize()"  [disabled]="initailizeDisable" [label]="'Initialize'" [type]="'primary'" [tooltip]="'Initialize'" [size]="'default'">
                             </amexio-button>
                         </amexio-column>
 
@@ -157,12 +160,10 @@ import { any } from 'codelyzer/util/function';
                 <amexio-action>
                   <amexio-button (onClick)="closeInitializeWindow()" label="Cancel" type="white"
                                  [icon]="'fa fa-remove'"></amexio-button>
-                  <amexio-button (onClick)="onInitializeChangesClick()" label="Initialize" type="green"
+                  <amexio-button (onClick)="validateAndInitialize()" label="Initailise" type="green"
                                  [icon]="'fa fa fa-arrow-circle-up'"></amexio-button>
                 </amexio-action>
               </amexio-window>
- <app-notification></app-notification>
-
  <amexio-window [show-window]="showCommitAllWindow" (close)="closeCommitAllWindow()" type="window"
                              [closable]="true" [footer]="true">
                 <amexio-header> Commit Changes</amexio-header>
@@ -189,7 +190,7 @@ import { any } from 'codelyzer/util/function';
                 <amexio-action>
                   <amexio-button (onClick)="closeCommitAllWindow()" label="Cancel" type="white"
                                  [icon]="'fa fa-remove'"></amexio-button>
-                  <amexio-button (onClick)="onCommitAllChangesClick($event)" label="Commit Changes" type="green"
+                  <amexio-button (onClick)="validateAndCommit()" label="Commit Changes" type="green"
                                  [icon]="'fa fa fa-arrow-circle-up'"></amexio-button>
                 </amexio-action>
               </amexio-window>
@@ -220,11 +221,22 @@ import { any } from 'codelyzer/util/function';
                 <amexio-action>
                   <amexio-button (onClick)="closePullWindow()" label="Cancel" type="white"
                                  [icon]="'fa fa-remove'"></amexio-button>
-                  <amexio-button (onClick)="onPullChangesClick($event)" label="Pull" type="green"
+                  <amexio-button (onClick)="validateAndPull()" label="Pull" type="green"
                                  [icon]="'fa fa fa-arrow-circle-down'"></amexio-button>
                 </amexio-action>
               </amexio-window>
+               <app-notification></app-notification>
 
+ <amexio-dialogue [show-dialogue]="warningdialogue" [closable]="false" [title]="'Info'" [custom]="true" (close)="warningdialogue = !warningdialogue"
+                   [type]="'alert'">
+    <amexio-body>
+      Please Initailise repository before Push/Pull.
+    </amexio-body>
+    <amexio-action>
+      <amexio-button type="primary" (onClick)="okWarningBtnClick()" [label]="'Ok'">
+      </amexio-button>
+    </amexio-action>
+  </amexio-dialogue>
 
             `,
   styles: [
@@ -250,6 +262,8 @@ export class SourceCodeComponent implements OnInit {
   showCommitAllWindow: boolean = false;
   showInitializeWindow: boolean = false;
   showPullWindow: boolean = false;
+  SaveasyncFlag: boolean = false;
+  warningdialogue: boolean;
   // repositoryInitialized:boolean;
   validationMsgArray: any;
   URLDisabled: boolean;
@@ -259,6 +273,7 @@ export class SourceCodeComponent implements OnInit {
   constructor(
     public http: HttpClient,
     private cookie: CookieService,
+    public loaderService: LoaderService,
     public _notificationService: NotificationService,
     public cdf: ChangeDetectorRef,
     private componentFactoryResolver: ComponentFactoryResolver
@@ -310,8 +325,8 @@ export class SourceCodeComponent implements OnInit {
               responseData.response.repositioryDetails == '' ||
               responseData.response.repositioryDetails == null
             ) {
-              this.tabdisabledFlag = true;
               this.gitActiveTab = true;
+              this.tabdisabledFlag = true;
               this.actionActiveTab = false;
               this.gitdisabledFlag = false;
             } else {
@@ -362,6 +377,8 @@ export class SourceCodeComponent implements OnInit {
   }
   onSave() {
     let response: any;
+    this.SaveasyncFlag = true;
+    this.loaderService.showLoader();
     let requestOption = {
       repositoryUrl: this.gitModel.repositoryUrl,
       repositoryType: this.gitModel.repositoryType,
@@ -375,8 +392,9 @@ export class SourceCodeComponent implements OnInit {
         },
         error => {
           this.validationMsgArray.push('Unable to connect to server');
-          // this.isValidateForm = true;
           this.createErrorData();
+          this.SaveasyncFlag = false;
+          this.loaderService.hideLoader();
         },
         () => {
           if (response.success) {
@@ -384,6 +402,8 @@ export class SourceCodeComponent implements OnInit {
             this._notificationService.showSuccessData(this.msgData);
             this.syncMappedRepositoryURL();
             this.resetData();
+            this.SaveasyncFlag = false;
+            this.loaderService.hideLoader();
           }
         }
       );
@@ -393,7 +413,11 @@ export class SourceCodeComponent implements OnInit {
     this.gitModel.repositoryType = '';
   }
   onCommit() {
-    this.showCommitAllWindow = true;
+    if (this.initailizeDisable) {
+      this.showCommitAllWindow = true;
+    } else {
+      this.warningdialogue = true;
+    }
   }
   closeCommitAllWindow() {
     this.commitAllDataClass.repositoryUsername = '';
@@ -401,7 +425,7 @@ export class SourceCodeComponent implements OnInit {
     this.showCommitAllWindow = false;
   }
 
-  onCommitAllChangesClick(data: any) {
+  onCommitAllChangesClick() {
     let response: any;
     let requestOption = {
       username: this.commitAllDataClass.repositoryUsername,
@@ -460,6 +484,60 @@ export class SourceCodeComponent implements OnInit {
       this.onInitializeChangesClick();
     }
   }
+  validateAndCommit() {
+    this.validationMsgArray = [];
+    if (this.initailiseDataModel.repositoryType == '') {
+      this.validationMsgArray.push('Please Select  repository type');
+    }
+    if (this.initailiseDataModel.repositoryUrl == '') {
+      this.validationMsgArray.push('Please enter valid repositoryUrl');
+    }
+    if (
+      this.commitAllDataClass.repositoryUsername == null ||
+      this.commitAllDataClass.repositoryUsername == ''
+    ) {
+      this.validationMsgArray.push('Please enter valid user name');
+    }
+    if (
+      this.commitAllDataClass.repositoryPassword == null ||
+      this.commitAllDataClass.repositoryPassword == ''
+    ) {
+      this.validationMsgArray.push('Please enter valid repositoryPassword');
+    }
+    if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
+      this.createInvalidCompErrorData();
+      return;
+    } else {
+      this.onCommitAllChangesClick();
+    }
+  }
+  validateAndPull() {
+    this.validationMsgArray = [];
+    if (this.initailiseDataModel.repositoryType == '') {
+      this.validationMsgArray.push('Please Select  repository type');
+    }
+    if (this.initailiseDataModel.repositoryUrl == '') {
+      this.validationMsgArray.push('Please enter valid repositoryUrl');
+    }
+    if (
+      this.pullDataClass.repositoryUsername == null ||
+      this.commitAllDataClass.repositoryUsername == ''
+    ) {
+      this.validationMsgArray.push('Please enter valid user name');
+    }
+    if (
+      this.pullDataClass.repositoryPassword == null ||
+      this.commitAllDataClass.repositoryPassword == ''
+    ) {
+      this.validationMsgArray.push('Please enter valid repositoryPassword');
+    }
+    if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
+      this.createInvalidCompErrorData();
+      return;
+    } else {
+      this.onPullChangesClick();
+    }
+  }
   onInitializeChangesClick() {
     let response: any;
     this.http
@@ -476,7 +554,9 @@ export class SourceCodeComponent implements OnInit {
           if (response.success) {
             this.closeInitializeWindow();
             this.msgData = [];
-            this.msgData.push(response.successMessage);
+            this.msgData.push(
+              'Initailise process completed please check the status in Task Details'
+            );
             this._notificationService.showSuccessData(this.msgData);
             this.initailizeDisable = true;
           }
@@ -500,7 +580,14 @@ export class SourceCodeComponent implements OnInit {
   }
 
   onPull() {
-    this.showPullWindow = true;
+    if (this.initailizeDisable) {
+      this.showPullWindow = true;
+    } else {
+      this.warningdialogue = true;
+    }
+  }
+  okWarningBtnClick() {
+    this.warningdialogue = false;
   }
   closePullWindow() {
     this.pullDataClass.repositoryPassword = '';
@@ -508,7 +595,7 @@ export class SourceCodeComponent implements OnInit {
     this.showPullWindow = false;
   }
 
-  onPullChangesClick(data: any) {
+  onPullChangesClick() {
     let response: any;
     let requestOption = {
       username: this.pullDataClass.repositoryUsername,
