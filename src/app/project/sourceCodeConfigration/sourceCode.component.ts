@@ -255,7 +255,7 @@ export class SourceCodeComponent implements OnInit {
 
   checkWithDisable: boolean = true;
   gitdisabledFlag: boolean;
-  gitActiveTab: boolean;
+  gitActiveTab: boolean = true;
   actionActiveTab: boolean;
   respositoryTypeData: any;
   tabdisabledFlag: boolean;
