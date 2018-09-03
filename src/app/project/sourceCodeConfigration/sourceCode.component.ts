@@ -100,7 +100,7 @@ import { any } from 'codelyzer/util/function';
 
                     <amexio-row>
                         <amexio-column [size]="10">
-                            <amexio-text-input [field-label]="'comment'" name="commitMessage" [place-holder]="'Enter comment'" [error-msg]="'Please enter comment'"
+                            <amexio-text-input [field-label]="'comment'" name="commitMessage" [place-holder]="'Enter commit message'" [error-msg]="'Please enter comment'"
                               [(ngModel)]="commitAllDataClass.commitMessage"  [icon-feedback]="true" [allow-blank]="false" [enable-popover]="true">
                             </amexio-text-input>
                         </amexio-column>
@@ -202,7 +202,7 @@ import { any } from 'codelyzer/util/function';
                   
                   <amexio-row>
                     <amexio-column [size]="6">
-                      <amexio-textarea-input [field-label]="'User name or email address'" name="repositoryUsername"
+                      <amexio-textarea-input [field-label]="'User name or email address'" name="pullDataClass.repositoryUsername"
                                              [(ngModel)]="pullDataClass.repositoryUsername"
                                              [place-holder]="'Enter GitHub user name or email address'"
                                              [error-msg]="'Please enter user name'" [icon-feedback]="true" [rows]="'1'"
@@ -211,7 +211,7 @@ import { any } from 'codelyzer/util/function';
                     </amexio-column>
                     <amexio-column [size]="6">
                       <amexio-password-input [enable-popover]="true" [(ngModel)]="pullDataClass.repositoryPassword"
-                                             [field-label]="'Password '" name="Password"
+                                             [field-label]="'Password '" name="pullDataClass.repositoryPassword"
                                              [place-holder]="'Enter GitHub Password'" [allow-blank]="false"
                                              [error-msg]="'Please enter Password'"
                                              [icon-feedback]="true"></amexio-password-input>
@@ -404,6 +404,8 @@ export class SourceCodeComponent implements OnInit {
             this.resetData();
             this.SaveasyncFlag = false;
             this.loaderService.hideLoader();
+          } else {
+            this.loaderService.hideLoader();
           }
         }
       );
@@ -427,6 +429,7 @@ export class SourceCodeComponent implements OnInit {
 
   onCommitAllChangesClick() {
     let response: any;
+    this.loaderService.showLoader();
     let requestOption = {
       username: this.commitAllDataClass.repositoryUsername,
       password: this.commitAllDataClass.repositoryPassword,
@@ -439,14 +442,21 @@ export class SourceCodeComponent implements OnInit {
         resp => {
           response = resp;
         },
-        error => {},
+        error => {
+          this.validationMsgArray.push('Unable to connect to server');
+          this.createErrorData();
+          this.loaderService.hideLoader();
+        },
         () => {
           if (response.success) {
             this.commitAllDataClass.commitMessage = '';
             this.closeCommitAllWindow();
+            this.loaderService.hideLoader();
             this.msgData = [];
             this.msgData.push(response.successMessage);
             this._notificationService.showSuccessData(this.msgData);
+          } else {
+            this.loaderService.hideLoader();
           }
         }
       );
@@ -458,6 +468,7 @@ export class SourceCodeComponent implements OnInit {
   }
 
   validateAndInitialize() {
+    console.log('in initailise');
     this.validationMsgArray = [];
     if (this.initailiseDataModel.repositoryType == '') {
       this.validationMsgArray.push('Please Select  repository type');
@@ -485,6 +496,7 @@ export class SourceCodeComponent implements OnInit {
     }
   }
   validateAndCommit() {
+    console.log('in commit');
     this.validationMsgArray = [];
     if (this.initailiseDataModel.repositoryType == '') {
       this.validationMsgArray.push('Please Select  repository type');
@@ -504,6 +516,12 @@ export class SourceCodeComponent implements OnInit {
     ) {
       this.validationMsgArray.push('Please enter valid repositoryPassword');
     }
+    if (
+      this.commitAllDataClass.commitMessage == null ||
+      this.commitAllDataClass.commitMessage == ''
+    ) {
+      this.validationMsgArray.push('Please enter commit message');
+    }
     if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
       this.createInvalidCompErrorData();
       return;
@@ -512,6 +530,7 @@ export class SourceCodeComponent implements OnInit {
     }
   }
   validateAndPull() {
+    console.log('in pull');
     this.validationMsgArray = [];
     if (this.initailiseDataModel.repositoryType == '') {
       this.validationMsgArray.push('Please Select  repository type');
@@ -521,13 +540,13 @@ export class SourceCodeComponent implements OnInit {
     }
     if (
       this.pullDataClass.repositoryUsername == null ||
-      this.commitAllDataClass.repositoryUsername == ''
+      this.pullDataClass.repositoryUsername == ''
     ) {
       this.validationMsgArray.push('Please enter valid user name');
     }
     if (
       this.pullDataClass.repositoryPassword == null ||
-      this.commitAllDataClass.repositoryPassword == ''
+      this.pullDataClass.repositoryPassword == ''
     ) {
       this.validationMsgArray.push('Please enter valid repositoryPassword');
     }
@@ -539,7 +558,9 @@ export class SourceCodeComponent implements OnInit {
     }
   }
   onInitializeChangesClick() {
+    this.validationMsgArray = [];
     let response: any;
+    this.loaderService.showLoader();
     this.http
       .post(
         '/api/project/sourcecodecommit/initialize',
@@ -549,16 +570,23 @@ export class SourceCodeComponent implements OnInit {
         resp => {
           response = resp;
         },
-        error => {},
+        error => {
+          this.validationMsgArray.push('Unable to connect to server');
+          this.createErrorData();
+          this.loaderService.hideLoader();
+        },
         () => {
           if (response.success) {
             this.closeInitializeWindow();
+            this.loaderService.hideLoader();
             this.msgData = [];
             this.msgData.push(
               'Initailise process completed please check the status in Task Details'
             );
             this._notificationService.showSuccessData(this.msgData);
             this.initailizeDisable = true;
+          } else {
+            this.loaderService.hideLoader();
           }
         }
       );
@@ -596,7 +624,9 @@ export class SourceCodeComponent implements OnInit {
   }
 
   onPullChangesClick() {
+    this.validationMsgArray = [];
     let response: any;
+    this.loaderService.showLoader();
     let requestOption = {
       username: this.pullDataClass.repositoryUsername,
       password: this.pullDataClass.repositoryPassword
@@ -607,13 +637,21 @@ export class SourceCodeComponent implements OnInit {
         resp => {
           response = resp;
         },
-        error => {},
+        error => {
+          this.validationMsgArray = [];
+          this.validationMsgArray.push('Unable to connect to server');
+          this.createErrorData();
+          this.loaderService.hideLoader();
+        },
         () => {
           if (response.success) {
             this.closePullWindow();
+            this.loaderService.hideLoader();
             this.msgData = [];
             this.msgData.push(response.successMessage);
             this._notificationService.showSuccessData(this.msgData);
+          } else {
+            this.loaderService.hideLoader();
           }
         }
       );

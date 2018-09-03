@@ -20,7 +20,7 @@ const routes: Routes = [
     component: InstanceUIComponent
   },
   {
-    path: 'gitConfigration',
+    path: 'gitConfiguration',
     component: SourceCodeComponent
   }
 ];
