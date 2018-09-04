@@ -581,7 +581,7 @@ export class SourceCodeComponent implements OnInit {
             this.loaderService.hideLoader();
             this.msgData = [];
             this.msgData.push(
-              'Initailise process completed please check the status in Task Details'
+              'Initailise process started,please check the status in Task Details'
             );
             this._notificationService.showSuccessData(this.msgData);
             this.initailizeDisable = true;
