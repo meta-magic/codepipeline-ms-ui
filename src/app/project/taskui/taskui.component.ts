@@ -206,7 +206,7 @@ export class TaskUIComponent implements OnInit {
   iterateData(data: any) {
     this.taskData = [];
     data.forEach((obj: any) => {
-      let date = new Date(obj.auditDetails.createdDate);
+      let date = new Date(obj.auditDetails.updatedDate);
       const actualCreatedDate = date.toLocaleDateString();
       const actualTime = date.toLocaleTimeString();
       const obj1 = {
