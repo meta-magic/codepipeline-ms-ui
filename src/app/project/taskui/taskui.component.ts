@@ -174,6 +174,7 @@ export class TaskUIComponent implements OnInit {
   //Method To Get All Tasks Details
   getTaskDetails() {
     this.taskData = [];
+    this.msgData = [];
     let taskResponse: any;
     this.serverFlag = true;
     this.loaderService.showLoader();
