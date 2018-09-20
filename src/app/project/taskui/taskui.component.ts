@@ -59,7 +59,6 @@ display: inline; }
             </div>
           </div>
         </amexio-header>
-    
     <amexio-body>
   <amexio-row>
   <amexio-column [size] =12 >
