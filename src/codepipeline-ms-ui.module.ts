@@ -15,6 +15,7 @@ const routes: Routes = [
     path: 'task-ui',
     component: TaskUIComponent
   },
+
   {
     path: 'instance-manager',
     component: InstanceUIComponent
