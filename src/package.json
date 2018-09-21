@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/username/repo"
+    "url": "https://github.com/meta-magic/codepipeline-ms-ui/"
   },
   "author": {
     "name": "datsgawas",
@@ -14,7 +14,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/username/repo/issues"
+    "url": "https://github.com/meta-magic/codepipeline-ms-ui/issues"
   },
   "main": "codepipeline-ms-ui.umd.js",
   "module": "codepipeline-ms-ui.js",
