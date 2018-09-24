@@ -433,7 +433,7 @@ export class SourceCodeComponent implements OnInit {
       commitMessage: this.commitAllDataClass.commitMessage
     };
     this.http
-      .post('/api/pipeline/SourceCodeSharing/commitAll', requestOption)
+      .post('/api/project/SourceCodeSharing/commitAll', requestOption)
       .subscribe(
         resp => {
           response = resp;
@@ -628,7 +628,7 @@ export class SourceCodeComponent implements OnInit {
       password: this.pullDataClass.repositoryPassword
     };
     this.http
-      .post('/api/pipeline/SourceCodeSharing/pull', requestOption)
+      .post('/api/project/SourceCodeSharing/pull', requestOption)
       .subscribe(
         resp => {
           response = resp;
