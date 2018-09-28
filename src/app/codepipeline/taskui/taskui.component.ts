@@ -209,7 +209,7 @@ export class TaskUIComponent implements OnInit {
       const actualTime = date.toLocaleTimeString();
       const obj1 = {
         type: obj.type,
-        boundedContext: obj.boundedContext,
+        boundedcontext: obj.boundedcontext,
         domain: obj.domain,
         taskName: obj.taskName,
         status: obj.status,
