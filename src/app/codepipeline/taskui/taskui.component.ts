@@ -69,7 +69,7 @@ display: inline; }
       [data-type]="'string'" [hidden]="false"
       [text]="'Type'">
     </amexio-data-table-column>
-    <amexio-data-table-column [data-index]="'boundedContext'"
+    <amexio-data-table-column [data-index]="'boundedcontext'"
       [data-type]="'string'" [hidden]="false"
       [text]="'Bounded Context'">
     </amexio-data-table-column>
