@@ -16,7 +16,7 @@ import { NotificationService } from 'platform-commons';
 <amexio-tab-view [closable]="false">
     <amexio-tab title="Git Configuration" [disabled]="gitdisabledFlag" [active]="gitActiveTab">
 
-        <amexio-form [form-name]="'validateForm'" [body-height]="80" [header]="false" [show-error]="true" [footer-align]="'right'">
+        <amexio-form [form-name]="'validateForm'" [body-height]="60" [header]="false" [show-error]="true" [footer-align]="'right'">
             <amexio-form-body>
                 <amexio-row>
                     <amexio-column [size]="12">
