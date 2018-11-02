@@ -22,7 +22,7 @@ import { NotificationService } from 'platform-commons';
                     <amexio-column [size]="12">
                         <amexio-radio-group [field-label]="'Git Repository Type'" [allow-blank]="false" name="gitModel.repositoryType" [display-field]="'repositoryTypeName'"
                             [value-field]="'repositoryType'" [horizontal]="true" [data-reader]="'response.data'" [data]="respositoryTypeData"
-                            [default-value]="gitModel.repositoryType"
+                            [(ngModel)]="gitModel.repositoryType"
                             (onSelection)="setSelectedRepository($event)">
                         </amexio-radio-group>
                     </amexio-column>
@@ -56,7 +56,7 @@ import { NotificationService } from 'platform-commons';
                     <amexio-column [size]="12">
                         <amexio-radio-group [field-label]="'Git Repository Type'" [allow-blank]="false" name="initailiseDataModel.repositoryType" [display-field]="'repositoryTypeName'"
                             [value-field]="'repositoryType'" [horizontal]="true" [data-reader]="'response.data'" [data]="respositoryTypeData"
-                            [default-value]="initailiseDataModel.repositoryType"  disabled="true" (onSelection)="setInitailizeRepository($event)" >
+                            [(ngModel)]="initailiseDataModel.repositoryType"  disabled="true" (onSelection)="setInitailizeRepository($event)" >
                         </amexio-radio-group>
                     </amexio-column>
                     <amexio-column [size]="12">
